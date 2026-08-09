@@ -1,0 +1,69 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CAMAGRU</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body class="auth-body">
+
+<main class="d-flex align-items-center justify-content-center min-vh-100"> -->
+
+    <div class="auth-card">
+
+        <div class="text-center mb-4">
+            <img src="/assets/images/camagru_name_logo.png" alt="Camagru" class="auth-logo">
+            <p class="text-muted mb-0">Sign in to continue</p>
+        </div>
+
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= htmlspecialchars($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="/login">
+
+            <div class="mb-3">
+                <label class="form-label">Pseudo</label>
+                <input type="text" name="pseudo" class="form-control auth-input"
+                        value="<?= htmlspecialchars($_POST['pseudo'] ?? '') ?>" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control auth-input" required>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100 auth-btn">
+                Login
+            </button>
+
+        </form>
+
+        <div class="text-center mt-3">
+            <small>
+                No account ?
+                <a href="/register">Create one</a>
+            </small>
+        </div>
+        <div class="text-center mt-3">
+            <small>
+                <a href="/forgot-password">Forgotten password ?</a>
+            </small>
+        </div>
+    </div>
+<!-- 
+</main>
+
+</body>
+</html> -->
