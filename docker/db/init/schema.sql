@@ -56,3 +56,15 @@ CREATE TABLE IF NOT EXISTS `stickers` (
     PRIMARY KEY (`id`),
     CONSTRAINT `user_sticker_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+
+
+INSERT INTO `users` (`pseudo`, `email`, `password`, `role`, `is_verified`) VALUES (
+    'admin',
+    'admin@camagru.com',
+    '$2a$12$8NJTwDFIh6EGtV4oIyVfIO3uJOKS8xzuC2vINT4nJW4XwPAVAZWtC',
+    'admin',
+    1
+);
+ 

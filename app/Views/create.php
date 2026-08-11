@@ -108,4 +108,4 @@
 
 </div>
 
-<script src="/assets/js/create.js"></script>
+<script type="module" src="/assets/js/create/main.js"></script>
