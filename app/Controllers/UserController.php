@@ -4,6 +4,9 @@
 require_once __DIR__ . "/../Models/Users.php";
 require_once __DIR__ . "/../Core/Mailer.php";
 
+require_once __DIR__ . "/../Core/Session.php";
+require_once __DIR__ . "/../Core/Request.php";
+
 class UserController {
     private User $user;
 
@@ -15,8 +18,8 @@ class UserController {
         $errors = [];
 
         if ($method === 'POST') {
-            $pseudo     = $_POST['pseudo'];
-            $password   = $_POST['password'];
+            $pseudo     = Request::post('pseudo');
+            $password   = Request::post('password');
 
             $user = $this->user->findByPseudo($pseudo);
             if (!$user)
@@ -26,7 +29,7 @@ class UserController {
             else if (!$user['is_verified'])
                 $errors[] = "Account not verified yet. Please, check your mailbox";
             if (empty($errors)) {
-                $_SESSION['user'] = $user;
+                Session::set('user', $user);
                 header('Location: /');
                 exit;
             }
@@ -41,10 +44,10 @@ class UserController {
         $errors = [];
 
         if ($method === 'POST') {
-            $pseudo     = trim($_POST['pseudo'] ?? '');
-            $email      = trim($_POST['email']  ?? '');
-            $password   = $_POST['password']    ?? '';
-            $confirm    = $_POST['confirm']     ?? '';
+            $pseudo     = trim(Request::post('pseudo'));
+            $email      = trim(Request::post('email'));
+            $password   = Request::post('password');
+            $confirm    = Request::post('confirm');
 
             if(strlen($pseudo) < 6)
                 $errors[] = "Un pseudo d'au moins 6 caractères est requis.";
@@ -85,7 +88,7 @@ class UserController {
     }
 
     public function verify() {
-        $token = $_GET['token'] ?? null;
+        $token = Request::get('token');
 
         if (!$token) {
             header('Location: /login');
@@ -104,7 +107,7 @@ class UserController {
         $success = false;
 
         if ($method === 'POST') {
-            $email = trim($_POST['email'] ?? '');
+            $email = trim(Request::post('email'));
 
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = "A valid email is required";
@@ -130,7 +133,7 @@ class UserController {
 
     public function resetPassword(string $method) {
         $errors = [];
-        $token = $_GET['token'] ?? null;
+        $token = Request::get('token');
 
         if (!$token) {
             header('Location: /login');
@@ -145,8 +148,8 @@ class UserController {
         }
 
         if ($method === 'POST') {
-            $password = $_POST['password'] ?? '';
-            $confirm = $_POST['confirm'] ?? '';
+            $password = Request::post('password');
+            $confirm = Request::post('confirm');
 
             if(strlen($password) < 8)
                 $errors[] = "A minimum 8 character password is required.";

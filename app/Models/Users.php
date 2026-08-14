@@ -95,4 +95,27 @@ class User {
             ':id' => $id
         ]);
     }
+
+        public function updatePseudo(int $id, string $pseudo): bool {
+        $stmt = $this->db->prepare("
+            UPDATE users SET pseudo = :pseudo, reset_token = NULL, reset_token_expires_at = NULL
+            WHERE id = :id
+        ");
+        return $stmt->execute([
+            ':pseudo' => $pseudo,
+            ':id' => $id
+        ]);
+    }
+
+
+    public function toggleEmailNotification(int $id, int $is_enabled): bool {
+        $stmt = $this->db->prepare("
+            UPDATE users SET email_notification = :is_enabled
+            WHERE id = :id
+        ");
+        return $stmt->execute([
+            ':is_enabled' => $is_enabled,
+            ':id' => $id
+        ]);
+    }
 }

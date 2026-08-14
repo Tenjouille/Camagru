@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `users` (
     `email` VARCHAR(180) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `role` ENUM('admin', 'comgrade') NOT NULL DEFAULT 'comgrade',
+    `email_notification` TINYINT(1) NOT NULL DEFAULT 1,
     `last_connection` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `is_verified` TINYINT(1) NOT NULL DEFAULT 0,
@@ -66,5 +67,11 @@ INSERT INTO `users` (`pseudo`, `email`, `password`, `role`, `is_verified`) VALUE
     '$2a$12$8NJTwDFIh6EGtV4oIyVfIO3uJOKS8xzuC2vINT4nJW4XwPAVAZWtC',
     'admin',
     1
+);
+
+
+INSERT INTO stickers (filename, path) VALUES (
+    'spider.png',
+    '/assets/stickers/spider.png'
 );
  

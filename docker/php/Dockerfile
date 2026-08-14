@@ -27,3 +27,7 @@ RUN a2enmod rewrite
 COPY ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 WORKDIR /var/www/html
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]

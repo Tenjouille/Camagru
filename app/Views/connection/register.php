@@ -20,13 +20,13 @@
         <div class="mb-3">
             <label class="form-label">Pseudo</label>
             <input type="text" name="pseudo" class="form-control auth-input"
-                   value="<?= htmlspecialchars($_POST['pseudo'] ?? '') ?>" required>
+                   value="<?= htmlspecialchars(Request::post('pseudo', '')) ?>" required>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" name="email" class="form-control auth-input"
-                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+                   value="<?= htmlspecialchars(Request::post('email', '')) ?>" required>
         </div>
 
         <div class="mb-3">

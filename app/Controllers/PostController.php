@@ -7,6 +7,9 @@ require_once __DIR__ . "/../Models/Stickers.php";
 require_once __DIR__ . "/../Models/Likes.php";
 require_once __DIR__ . "/../Models/Comments.php";
 
+require_once __DIR__ . "/../Core/Session.php";
+require_once __DIR__ . "/../Core/Request.php";
+
 class PostController
 {
     private Post $post;
@@ -24,13 +27,13 @@ class PostController
     public function show() {
         ob_end_clean();
         header('Content-Type: application/json');
-        $postId = (int) ($_GET['id'] ?? 0);
+        $postId = (int) (Request::get('id', 0));
         if (!$postId) {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid post id']);
             return ;
         }
-        $user = $_SESSION['user'] ?? null;
+        $user = Session::get('user');
         $post = $this->post->getById($postId);
         if (!$post) {
             http_response_code(404);
@@ -54,20 +57,20 @@ class PostController
         ob_end_clean();
         header('Content-Type: application/json');
 
-        if (!isset($_SESSION['user'])) {
+        if (!Session::has('user')) {
             http_response_code(401);
             echo json_encode(['error' => 'Unauthorized']);
             return ;
         }
 
-        $postId = (int) ($_POST['post_id'] ?? 0);
+        $postId = (int) Request::post('post_id', 0);
         if (!$postId) {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid post id']);
             return ;
         }
 
-        $userId = $_SESSION['user']['id'];
+        $userId = Session::get('user')['id'];
         $this->like->toggle($postId, $userId);
 
         $hasLiked = $this->like->hasLiked($postId, $userId);
@@ -83,20 +86,20 @@ class PostController
         ob_end_clean();
         header('Content-Type: application/json');
 
-        if (!isset($_SESSION['user'])) {
+        if (!Session::has('user')) {
             http_response_code(401);
             echo json_encode(['error' => 'Unauthorized']);
             return ;
         }
 
-        $postId = (int) ($_POST['post_id'] ?? 0);
-        $content = trim($_POST['content'] ?? '');
+        $postId = (int) Request::post('post_id', 0);
+        $content = trim(Request::post('content'));
         if (!$postId || empty($content)) {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid data']);
             return ;
         }
-        $userId = $_SESSION['user']['id'];
+        $userId = Session::get('user')['id'];
         $this->comment->create($postId, $userId, $content);
 
         $comments = $this->comment->getByPostId($postId);
@@ -105,18 +108,18 @@ class PostController
     }
 
     public function create(string $method) {
-        if (!isset($_SESSION['user'])) {
+        if (!Session::has('user')) {
             header('Location: /login');
             exit;
         }
         
-        $user = $_SESSION['user'];
+        $user = Session::get('user');
         $errors = [];
 
         if ($method === 'POST') {
-            $description    = trim($_POST['description'] ?? '');
-            $imageData      = $_POST['image_data'] ?? null;
-            $stickersData   = $_POST['stickers'] ?? null;
+            $description    = trim(Request::post('description', ''));
+            $imageData      = Request::post('image_data');
+            $stickersData   = Request::post('stickers');
             $stickers = json_decode($stickersData, true);
 
             if (!is_array($stickers) || empty($stickers))

@@ -3,6 +3,10 @@
 
 require_once __DIR__ . "/../Models/Posts.php";
 
+require_once __DIR__ . "/../Core/Session.php";
+require_once __DIR__ . "/../Core/Request.php";
+
+
 class GalleryController
 {
     private Post $post;
@@ -12,7 +16,7 @@ class GalleryController
     }
 
     public function index() {
-        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $page = max(1, (int) Request::get('page', 1));
 
         $posts = $this->post->getPaginated($page);
         $totalPages = $this->post->getTotalPages();

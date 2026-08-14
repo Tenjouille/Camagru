@@ -88,6 +88,6 @@
     </div>
 </div>
 <script>
-    const IS_LOGGED_IN = <?= isset($_SESSION['user']) ? 'true' : 'false' ?>;
+    const IS_LOGGED_IN = <?= Session::has('user') ? 'true' : 'false' ?>;
 </script>
 <script src="/assets/js/gallery.js"></script>

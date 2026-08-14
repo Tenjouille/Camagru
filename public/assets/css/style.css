@@ -94,6 +94,44 @@ body {
     opacity: 1;
 }
 
+/* Notification toggle */
+.notif-form .form-check-input {
+    cursor: pointer;
+    transition: background-position 0.2s ease-in-out, background-color 0.25s ease,
+        border-color 0.25s ease, box-shadow 0.15s ease;
+}
+
+.notif-form .form-check-input:checked {
+    background-color: #262626;
+    border-color: #262626;
+}
+
+.notif-form .form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(38, 38, 38, 0.15);
+}
+
+.notif-form.is-saving .form-check-input {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.notif-status {
+    font-size: 0.8rem;
+    color: #737373;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.notif-status.visible {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notif-form .form-check-input {
+        transition: none;
+    }
+}
+
 /* ===== CREATE PAGE ===== */
 
 .create-layout {

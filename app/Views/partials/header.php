@@ -1,4 +1,4 @@
-<?php $user = $_SESSION['user'] ?? null; ?>
+<?php $user = Session::get('user'); ?>
 
 <nav class="navbar navbar-expand-md sticky-top camagru-header">
     <div class="container">
@@ -20,7 +20,7 @@
                 <?php if ($user): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">
-                            <i class="bi bi-person"></i> Profile
+                            <i class="bi bi-person"></i> <?= $user['pseudo'] ?>
                         </a>
                     </li>
                     <li class="nav-item">

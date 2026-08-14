@@ -1,16 +1,20 @@
 <?php
 
-session_start();
+require_once __DIR__ . "/../app/Core/Session.php";
+require_once __DIR__ . "/../app/Core/Request.php";
+
+Session::start();
 ob_start();
 
 require_once __DIR__ . "/../app/Controllers/HomeController.php";
 require_once __DIR__ . "/../app/Controllers/UserController.php";
 require_once __DIR__ . "/../app/Controllers/GalleryController.php";
 require_once __DIR__ . "/../app/Controllers/PostController.php";
+require_once __DIR__ . "/../app/Controllers/ProfileController.php";
 
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$method = $_SERVER['REQUEST_METHOD'];
-$user = $_SESSION['user'] ?? null;
+$uri = Request::uri();
+$method = Request::method();
+$user = Session::get('user');
 
 switch ($uri) {
     case '/':
@@ -42,6 +46,21 @@ switch ($uri) {
         break;
     case '/create':
         (new PostController())->create($method);
+        break;
+    case '/profile':
+        (new ProfileController($user))->show();
+        break;
+    case '/profile/sticker':
+        (new ProfileController($user))->addSticker();
+        break;
+    case '/profile/pseudo':
+        (new ProfileController($user))->updatePseudo();
+        break;
+    case '/profile/password':
+        (new ProfileController($user))->updatePassword();
+        break;
+    case '/profile/notifications':
+        (new ProfileController($user))->toggleNotifications();
         break;
     case '/post/like':
         (new PostController())->like();

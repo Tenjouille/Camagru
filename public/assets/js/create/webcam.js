@@ -23,15 +23,16 @@ export async function startWebcam() {
 }
 
 document.getElementById('photoInput').addEventListener('change', (e) => {
+    console.log("Choose a picture");
     const file = e.target.files[0];
     if (!file)
         return ;
     const img = new Image();
     img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
+        resizeCanvas();
         state.sourceImage = img;
         renderLoop();
+        document.getElementById('fallbackSection').style.display = 'none';
     }
     img.src = URL.createObjectURL(file);
 })

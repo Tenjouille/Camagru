@@ -13,9 +13,9 @@ dom.captureBtn.addEventListener('click', () => {
     const captureCtx = captureCanvas.getContext('2d');
 
     if (state.sourceImage instanceof HTMLVideoElement)
-        drawCover(captureCtx, state.sourceImage);
+        drawCover(captureCtx, state.sourceImage, { mirror: true });
     else if (state.sourceImage instanceof HTMLImageElement)
-        captureCtx.drawImage(state.sourceImage, 0, 0, captureCanvas.width, captureCanvas.height);
+        drawCover(captureCtx, state.sourceImage, { fit: 'contain' });
 
     document.getElementById('imageData').value = captureCanvas.toDataURL('image/jpeg', 0.9);
     document.getElementById('stickersData').value =
