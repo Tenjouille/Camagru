@@ -115,14 +115,16 @@ body {
     pointer-events: none;
 }
 
-.notif-status {
+.field-status {
+    display: inline-flex;
+    align-items: center;
     font-size: 0.8rem;
     color: #737373;
     opacity: 0;
     transition: opacity 0.25s ease;
 }
 
-.notif-status.visible {
+.field-status.visible {
     opacity: 1;
 }
 

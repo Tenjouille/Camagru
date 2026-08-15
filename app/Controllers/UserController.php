@@ -6,6 +6,7 @@ require_once __DIR__ . "/../Core/Mailer.php";
 
 require_once __DIR__ . "/../Core/Session.php";
 require_once __DIR__ . "/../Core/Request.php";
+require_once __DIR__ . "/../Core/Validator.php";
 
 class UserController {
     private User $user;
@@ -23,9 +24,9 @@ class UserController {
 
             $user = $this->user->findByPseudo($pseudo);
             if (!$user)
-                $errors[] = "Invalid Identifiers : pseudo not found";
+                $errors[] = "Invalid Identifiers : incorrect password or username";
             else if (!password_verify($password, $user['password']))
-                $errors[] = "Invalid Identifiers : incorrect password";
+                $errors[] = "Invalid Identifiers : incorrect password or username";
             else if (!$user['is_verified'])
                 $errors[] = "Account not verified yet. Please, check your mailbox";
             if (empty($errors)) {
@@ -50,12 +51,12 @@ class UserController {
             $confirm    = Request::post('confirm');
 
             if(strlen($pseudo) < 6)
-                $errors[] = "Un pseudo d'au moins 6 caractères est requis.";
+                $errors[] = "Votre pseudo doit faire entre 6 et 60 caractères.";
             if(empty($email))
                 $errors[] = "Un email est requis.";
             if(!filter_var($email, FILTER_VALIDATE_EMAIL))
                 $errors[] = "L'email est invalide.";
-            $errors = array_merge($errors, $this->passwordValidation($password));
+            $errors = [...$errors, ...Validator::password($password, '')];
             if($password !== $confirm)
                 $errors[] = "Passwords doesn't match";
             if ($this->user->findByEmail($email))
@@ -168,19 +169,4 @@ class UserController {
         require __DIR__ . "/../Views/layout.php";
     }
 
-    private function passwordValidation($password): array {
-    $errors = [];
-    
-    if (strlen($password) < 8)
-        $errors[] = "Password must be at least 8 characters.";
-    if (!preg_match('/[a-z]/', $password))
-        $errors[] = "Password must contain at least one lowercase letter.";
-    if (!preg_match('/[A-Z]/', $password))
-        $errors[] = "Password must contain at least one uppercase letter.";
-    if (!preg_match('/[0-9]/', $password))
-        $errors[] = "Password must contain at least one number.";
-    if (!preg_match('/[\W_]/', $password))
-        $errors[] = "Password must contain at least one special character.";
-    return $errors;
-    }
 }

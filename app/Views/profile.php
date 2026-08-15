@@ -18,13 +18,14 @@
         <?php endif; ?>
 
         <!-- Pseudo -->
-        <form method="POST" action="/profile/pseudo" class="mb-3">
+        <form method="POST" action="/profile/pseudo" class="mb-3 pseudo-form">
             <label class="form-label">Pseudo</label>
             <div class="input-group">
-                <input type="text" name="pseudo" class="form-control"
+                <input type="text" name="pseudo" id="changePseudo" class="form-control"
                        value="<?= htmlspecialchars($currentUser['pseudo']) ?>" <?= Session::isAdmin() ? 'disabled' : 'required' ?>>
                 <button type="submit" class="btn btn-dark <?= Session::isAdmin() ? 'd-none' : "" ?>">Mettre à jour</button>
             </div>
+            <span class="field-status" aria-live="polite"></span>
         </form>
 
         <!-- Email (lecture seule) -->
@@ -34,12 +35,13 @@
         </div>
 
         <!-- Mot de passe -->
-        <form method="POST" action="/profile/password" class="mb-3">
+        <form method="POST" action="/profile/password" class="mb-3 pwd-form">
             <label class="form-label">Changer le mot de passe</label>
             <input type="password" name="current_password" class="form-control mb-2" placeholder="Mot de passe actuel" required>
             <input type="password" name="password" class="form-control mb-2" placeholder="Nouveau mot de passe" required>
             <input type="password" name="confirm" class="form-control mb-2" placeholder="Confirmer le nouveau mot de passe" required>
             <button type="submit" class="btn btn-dark">Changer le mot de passe</button>
+            <span class="field-status" aria-live="polite"></span>
         </form>
 
         <!-- Notifications email -->
@@ -50,7 +52,7 @@
                 <label class="form-check-label mb-0" for="notifyOnComment">
                     Recevoir un email quand quelqu'un commente un de mes posts
                 </label>
-                <span class="notif-status" aria-live="polite"></span>
+                <span class="field-status" aria-live="polite"></span>
             </div>
         </form>
     </div>

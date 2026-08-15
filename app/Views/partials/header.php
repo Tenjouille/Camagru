@@ -20,7 +20,7 @@
                 <?php if ($user): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/profile">
-                            <i class="bi bi-person"></i> <?= $user['pseudo'] ?>
+                            <i class="bi bi-person"></i> <span id="headerPseudo"><?= htmlspecialchars($user['pseudo']) ?></span>
                         </a>
                     </li>
                     <li class="nav-item">
