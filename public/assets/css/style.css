@@ -225,6 +225,7 @@ body {
 }
 
 .sticker-thumb {
+    position: relative;
     width: 70px;
     height: 70px;
     border: 2px solid transparent;
@@ -233,6 +234,28 @@ body {
     overflow: hidden;
     flex-shrink: 0;
     transition: border-color 0.2s;
+}
+
+.sticker-delete-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(220, 53, 69, 0.85);
+    color: #fff;
+    font-size: 1.4rem;
+    border: none;
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    cursor: pointer;
+}
+
+.sticker-thumb.confirm-delete .sticker-delete-overlay {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .sticker-thumb img {

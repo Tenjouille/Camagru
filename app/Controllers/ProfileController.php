@@ -55,7 +55,80 @@ class ProfileController
 
     // POST /profile/sticker — upload d'un sticker personnel
     public function addSticker() {
+        $sticker = Request::file('sticker');
+        $userId = Session::isAdmin() ? null : $this->currentUser['id'];
 
+        if (!$sticker || $sticker['error'] !== UPLOAD_ERR_OK){
+            $this->returnErrors(['Echec de l\'upload du sticker']);
+            return ;
+        }
+        $stickerInfo = getimagesize($sticker['tmp_name']);
+        if(!$stickerInfo || $stickerInfo['mime'] !== 'image/png') {
+            $this->returnErrors(["L'image doit être de type .png"]);
+            return ;
+        }
+        if($sticker['size'] >= 2 * 1024 * 1024) {
+            $this->returnErrors(["Image trop volumineuse"]);
+            return ;
+        }
+        $hash = hash_file('sha256', $sticker['tmp_name']);
+        $existing_stickers = $this->sticker->findByHash($hash);
+        if (empty($existing_stickers)) {
+            $stickerName = uniqid('sticker_', true) . '.png';
+            $publicPath = '/assets/stickers/' . $stickerName;
+            $destPath = __DIR__ . '/../../public' . $publicPath;
+            if (!move_uploaded_file($sticker['tmp_name'], $destPath)){
+                $this->returnErrors(["Le sticker chargé est invalide"]);
+                return ;
+            }
+        } else {
+            $stickerName = $existing_stickers[0]['filename'];
+            $publicPath = $existing_stickers[0]['path'];
+        }
+
+        foreach ($existing_stickers as $existing_sticker) {
+            if ((int) $this->currentUser['id'] === (int) $existing_sticker['user_id']) {
+                $this->returnErrors(['Vous possédez déjà ce sticker']);
+                return ;
+            }
+        }
+        $this->sticker->save($hash, $userId, $stickerName, $publicPath);
+
+        if (Request::isAjax()) {
+            http_response_code(204);
+            exit;
+        }
+        header('Location: /profile');
+        exit;
+    }
+
+    public function deleteSticker() {
+        $stickerId = (int) Request::post('sticker_id', 0);
+        $sticker = $this->sticker->findById($stickerId);
+        if (!$sticker) {
+            $this->returnErrors(['Sticker introuvable']);
+            return ;
+        }
+        $isOwner = $sticker['user_id'] !== null && (int) $sticker['user_id'] === (int) $this->currentUser['id'];
+        if (!$isOwner && !Session::isAdmin()) {
+            $this->returnErrors(['Vous ne pouvez pas supprimer ce sticker']);
+            return;
+        }
+        $this->sticker->delete($stickerId);
+
+        $stillReferenced = $this->sticker->findByHash($sticker['hash']);
+        if (empty($stillReferenced)) {
+            $diskPath = __DIR__ . '/../../public' . $sticker['path'];
+            if (file_exists($diskPath))
+                unlink($diskPath);
+        }
+
+        if (Request::isAjax()){
+            http_response_code(204);
+            exit ;
+        }
+        header('Location: /profile');
+        exit;
     }
 
     // POST /profile/pseudo — changement de pseudo

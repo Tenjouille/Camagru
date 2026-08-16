@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS `post_likes` (
 
 CREATE TABLE IF NOT EXISTS `stickers` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `user_id` INT UNSIGNED NULL,        -- NULL = sticker de base (globale)
+    `hash` VARCHAR(255) NOT NULL,
+    `user_id` INT UNSIGNED NULL,
     `filename` VARCHAR(255) NOT NULL,
     `path` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -70,8 +71,15 @@ INSERT INTO `users` (`pseudo`, `email`, `password`, `role`, `is_verified`) VALUE
 );
 
 
-INSERT INTO stickers (filename, path) VALUES (
+INSERT INTO `stickers` (`hash`, `filename`, `path`) VALUES (
+    '9098750cc38bcd932aee9d2ad41c5d06dfb349d36bff48f893413c5333589069',
     'spider.png',
     '/assets/stickers/spider.png'
+);
+
+INSERT INTO `stickers` (`hash`, `filename`, `path`) VALUES (
+    '42060a6635192a658ad75b3dd33898b24e94d7396126514d86d7f7b1222dedb9',
+    'camagru.png',
+    '/assets/stickers/camagru.png'
 );
  

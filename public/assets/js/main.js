@@ -64,6 +64,41 @@ if (passwordForm) {
     });
 }
 
+const myStickersGrid = document.querySelector('#myStickersGrid');
+
+if (myStickersGrid) {
+    myStickersGrid.addEventListener('click', async (event) => {
+        const deleteBtn = event.target.closest('.sticker-delete-overlay');
+        const thumb = event.target.closest('.sticker-thumb');
+
+        if (deleteBtn) {
+            const stickerId = deleteBtn.closest('.sticker-thumb').dataset.id;
+            const response = await fetch('/profile/sticker/delete', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: new URLSearchParams({ sticker_id: stickerId }),
+            });
+            if (response.ok)
+                deleteBtn.closest('.sticker-thumb').remove();
+            return;
+        }
+
+        myStickersGrid.querySelectorAll('.sticker-thumb.confirm-delete').forEach((el) => {
+            if (el !== thumb) el.classList.remove('confirm-delete');
+        });
+        if (thumb)
+            thumb.classList.add('confirm-delete');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!myStickersGrid.contains(event.target)) {
+            myStickersGrid.querySelectorAll('.sticker-thumb.confirm-delete').forEach((el) => {
+                el.classList.remove('confirm-delete');
+            });
+        }
+    });
+}
+
 if (notifForm) {
     const checkbox = notifForm.querySelector('#notifyOnComment');
     const status = notifForm.querySelector('.field-status');

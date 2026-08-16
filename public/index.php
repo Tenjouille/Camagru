@@ -50,8 +50,11 @@ switch ($uri) {
     case '/profile':
         (new ProfileController($user))->show();
         break;
-    case '/profile/sticker':
+    case '/profile/sticker/add':
         (new ProfileController($user))->addSticker();
+        break;
+    case '/profile/sticker/delete':
+        (new ProfileController($user))->deleteSticker();
         break;
     case '/profile/pseudo':
         (new ProfileController($user))->updatePseudo();
