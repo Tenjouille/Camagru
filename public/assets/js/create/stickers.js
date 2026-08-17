@@ -69,26 +69,30 @@ document.querySelectorAll('.sticker-thumb').forEach(thumb => {
 });
 
 dom.rotSlider.addEventListener('input', () => {
-    state.activeSticker.angle = parseFloat(dom.rotSlider.value);
-    dom.rotValue.textContent = state.activeSticker.angle + '°';
-    if (!(state.sourceImage instanceof HTMLVideoElement))
-        renderLoop();
+    if(state.activeSticker) {
+        state.activeSticker.angle = parseFloat(dom.rotSlider.value);
+        dom.rotValue.textContent = state.activeSticker.angle + '°';
+        if (!(state.sourceImage instanceof HTMLVideoElement))
+            renderLoop();
+    }
 });
 
 dom.sizeSlider. addEventListener('input', () => {
-    const newWidth = parseInt(dom.sizeSlider.value);
+    if(state.activeSticker) {
+        const newWidth = parseInt(dom.sizeSlider.value);
 
-    const cx = state.activeSticker.x + state.activeSticker.w / 2;
-    const cy = state.activeSticker.y + state.activeSticker.h / 2;
+        const cx = state.activeSticker.x + state.activeSticker.w / 2;
+        const cy = state.activeSticker.y + state.activeSticker.h / 2;
 
-    state.activeSticker.w = newWidth;
-    state.activeSticker.h = newWidth / state.activeSticker.ratio;
+        state.activeSticker.w = newWidth;
+        state.activeSticker.h = newWidth / state.activeSticker.ratio;
 
-    state.activeSticker.x = cx - state.activeSticker.w / 2;
-    state.activeSticker.y = cy - state.activeSticker.h / 2;
+        state.activeSticker.x = cx - state.activeSticker.w / 2;
+        state.activeSticker.y = cy - state.activeSticker.h / 2;
 
-    dom.sizeValue.textContent = newWidth + 'px';
-
+        dom.sizeValue.textContent = newWidth + 'px';
+   
+    }
     if (!(state.sourceImage instanceof HTMLVideoElement))
         renderLoop();
 })
