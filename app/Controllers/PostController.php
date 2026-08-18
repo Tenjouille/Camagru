@@ -24,7 +24,7 @@ class PostController
         $this->comment = new Comment();
     }
 
-    public function show() {
+    public function show(array $errors = []) {
         ob_end_clean();
         header('Content-Type: application/json');
         $postId = (int) (Request::get('id', 0));
@@ -51,6 +51,16 @@ class PostController
             'hasLiked'  => $hasLiked,
             'likeCount' => $likeCount
         ]);
+    }
+
+        private function returnErrors(array $errors = []) {
+        if (Request::isAjax()) {
+            http_response_code(422);
+            header('Content-Type: application/json');
+            echo json_encode(['errors' => $errors]);
+            exit;
+        }
+        $this->show($errors);
     }
 
     public function like() {
@@ -106,6 +116,31 @@ class PostController
 
         echo json_encode(['comments' => $comments]);
     }
+
+    public function delete() {
+        $postId = (int) Request::post('post_id', 0);
+        $post = $this->post->getById($postId);
+        if (!$post) {
+            $this->returnErrors(['Post introuvable']);
+            return;
+        }
+        $isOwner = (int) $post['user_id'] === (int) Session::get('user')['id'];
+        if (!$isOwner) {
+            $this->returnErrors(['Vous ne pouvez pas supprimer ce post']);
+            return;
+        }
+        $this->post->delete($postId);
+        $diskPath = __DIR__ . '/../../public/uploads/' . $post['path'];
+        if (file_exists($diskPath))
+            unlink($diskPath);
+        if (Request::isAjax()) {
+            http_response_code(204);
+            exit;
+        }
+        header('Location: /create');
+        exit;
+    }
+
 
     public function create(string $method) {
         if (!Session::has('user')) {

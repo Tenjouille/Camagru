@@ -92,14 +92,22 @@
     <!-- Side section : posts de l'utilisateur -->
     <aside class="create-sidebar">
         <h6>Your posts</h6>
-        <div class="sidebar-posts">
+        <div class="sidebar-posts" id="myCreationSidebar">
             <?php if (empty($userPosts)): ?>
                 <p class="text-muted small">No posts yet.</p>
             <?php else: ?>
                 <?php foreach ($userPosts as $post): ?>
-                    <div class="sidebar-post">
+                    <?php
+                        $canDelete = (int) $post['user_id'] === (int) $user['id'];
+                    ?>
+                    <div class="sidebar-post" data-id="<?= $post['id'] ?>">
                         <img src="<?= htmlspecialchars($post['path']) ?>"
                              alt="Your post">
+                        <?php if($canDelete): ?>
+                            <button type="button" class="post-delete-overlay" aria-label="Supprimer ce post">
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        <?php endif ?>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>

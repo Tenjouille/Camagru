@@ -118,6 +118,7 @@ if (stickerForm) {
 }
 
 const myStickersGrid = document.querySelector('#myStickersGrid');
+const myCreationsGrid = document.querySelector('#myCreationSidebar');
 
 if (myStickersGrid) {
     myStickersGrid.addEventListener('click', async (event) => {
@@ -129,7 +130,7 @@ if (myStickersGrid) {
             const response = await fetch('/profile/sticker/delete', {
                 method: 'POST',
                 headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: new URLSearchParams({ sticker_id: stickerId }),
+                body: new URLSearchParams({ sticker_id: stickerId })
             });
             if (response.ok) {
                 const el = deleteBtn.closest('.sticker-thumb');
@@ -149,6 +150,44 @@ if (myStickersGrid) {
     document.addEventListener('click', (event) => {
         if (!myStickersGrid.contains(event.target)) {
             myStickersGrid.querySelectorAll('.sticker-thumb.confirm-delete').forEach((el) => {
+                el.classList.remove('confirm-delete');
+            });
+        }
+    });
+
+}
+
+if(myCreationsGrid) {
+    myCreationsGrid.addEventListener('click', async (event) => {
+        const deleteBtn = event.target.closest('.post-delete-overlay');
+        const selectedPost = event.target.closest('.sidebar-post');
+        
+        if (deleteBtn) {
+            const postId = deleteBtn.closest('.sidebar-post').dataset.id;
+            const response = await fetch('/post/delete', {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: new URLSearchParams({ post_id: postId })
+            });
+            if (response.ok) {
+                const el = deleteBtn.closest('.sidebar-post');
+                el.classList.add('leaving');
+                el.addEventListener('animationend', () => el.remove(), { once: true});
+            }
+            return;
+        }
+
+        myCreationsGrid.querySelectorAll('.sidebar-post.confirm-delete').forEach((el) => {
+            if (el !== selectedPost)
+                el.classList.remove('confirm-delete');
+        });
+        if (selectedPost)
+            selectedPost.classList.add('confirm-delete');
+    });
+
+    document.addEventListener('click', (event) => {
+        if (!myCreationsGrid.contains(event.target)) {
+            myCreationsGrid.querySelectorAll('.sidebar-post.confirm-delete').forEach((el) => {
                 el.classList.remove('confirm-delete');
             });
         }

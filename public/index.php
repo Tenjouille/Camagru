@@ -65,14 +65,17 @@ switch ($uri) {
     case '/profile/notifications':
         (new ProfileController($user))->toggleNotifications();
         break;
+    case '/post':
+        (new PostController())->show();
+        break;
+    case '/post/delete':
+        (new PostController())->delete();
+        break;
     case '/post/like':
         (new PostController())->like();
         break;
     case '/post/comment':
         (new PostController())->comment();
-        break;
-    case '/post':
-        (new PostController())->show();
         break;
     default:
         http_response_code(404);

@@ -80,4 +80,12 @@ class Post
         $stmt->execute([':postId' => $postId]);
         return (int) $stmt->fetchColumn();
     }
+
+    public function delete(int $id) {
+        $stmt = $this->db->prepare("
+            DELETE FROM posts
+            WHERE id = :id
+        ");
+        return $stmt->execute([':id' => $id]);
+    }
 }
