@@ -1,12 +1,13 @@
-const postModal     = document.getElementById('postModal');
-const modalImage    = document.getElementById('modalPostImage');
-const modalAuthor   = document.getElementById('modalPostAuthor');
-const modalComments = document.getElementById('modalComments');
-const modalLikeBtn  = document.getElementById('modalLikeBtn');
-const modalLikeIcon = document.getElementById('modalLikeIcon');
-const modalLikeCount = document.getElementById('modalLikeCount');
-const modalCommentInput  = document.getElementById('modalCommentInput');
-const modalCommentSubmit = document.getElementById('modalCommentSubmit');
+const postModal             = document.getElementById('postModal');
+const modalImage            = document.getElementById('modalPostImage');
+const modalAuthor           = document.getElementById('modalPostAuthor');
+const modalDescription      = document.getElementById('modalPostDescription');
+const modalComments         = document.getElementById('modalComments');
+const modalLikeBtn          = document.getElementById('modalLikeBtn');
+const modalLikeIcon         = document.getElementById('modalLikeIcon');
+const modalLikeCount        = document.getElementById('modalLikeCount');
+const modalCommentInput     = document.getElementById('modalCommentInput');
+const modalCommentSubmit    = document.getElementById('modalCommentSubmit');
 
 let currentPostId = null;
 
@@ -39,8 +40,9 @@ async function loadPost(postId) {
     const res  = await fetch(`/post?id=${postId}`);
     const data = await res.json();
 
-    modalImage.src        = data.post.path;
-    modalAuthor.textContent = data.post.pseudo;
+    modalImage.src                  = data.post.path;
+    modalAuthor.textContent         = data.post.pseudo;
+    modalDescription.textContent    = data.post.description;
 
     updateLike(data.hasLiked, data.likeCount);
     renderComments(data.comments);

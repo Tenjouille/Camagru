@@ -224,6 +224,25 @@ body {
     gap: 0.5rem;
 }
 
+@keyframes stickerPopIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes stickerPopOut {
+    from { opacity: 1; transform: scale(1); }
+    to   { opacity: 0; transform: scale(0.8); }
+}
+
+.sticker-thumb.entering {
+    animation: stickerPopIn 0.2s ease;
+}
+
+.sticker-thumb.leaving {
+    animation: stickerPopOut 0.2s ease forwards;
+    pointer-events: none;
+}
+
 .sticker-thumb {
     position: relative;
     width: 70px;
@@ -399,6 +418,15 @@ body {
     align-items: center;
     gap: 0.5rem;
     font-weight: 600;
+}
+
+.post-modal-description {
+    padding: 1rem;
+    border-bottom: 1px solid #dbdbdb;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* font-weight: 600; */
 }
 
 .post-modal-comments {

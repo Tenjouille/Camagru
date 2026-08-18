@@ -87,15 +87,22 @@ class ProfileController
         }
 
         foreach ($existing_stickers as $existing_sticker) {
-            if ((int) $this->currentUser['id'] === (int) $existing_sticker['user_id']) {
+            if (!$existing_sticker['user_id'] || (int) $this->currentUser['id'] === (int) $existing_sticker['user_id']) {
                 $this->returnErrors(['Vous possédez déjà ce sticker']);
                 return ;
             }
         }
-        $this->sticker->save($hash, $userId, $stickerName, $publicPath);
+        $newId = $this->sticker->save($hash, $userId, $stickerName, $publicPath);
+        if (!$newId) {
+            if (empty($existing_stickers) && file_exists($destPath))
+                unlink($destPath);
+            $this->returnErrors(["Erreur lors de l'enregistrement du sticker"]);
+            return ;
+        }
 
         if (Request::isAjax()) {
-            http_response_code(204);
+            header('Content-Type: application/json');
+            echo json_encode(['id' => $newId, 'path' => $publicPath]);
             exit;
         }
         header('Location: /profile');
@@ -116,7 +123,7 @@ class ProfileController
         }
         $this->sticker->delete($stickerId);
 
-        $stillReferenced = $this->sticker->findByHash($sticker['hash']);
+        $stillReferenced = $this->sticker->findByPath($sticker['path']);
         if (empty($stillReferenced)) {
             $diskPath = __DIR__ . '/../../public' . $sticker['path'];
             if (file_exists($diskPath))

@@ -67,22 +67,31 @@
                     <p class="text-muted small">Aucun sticker personnel pour le moment.</p>
                 <?php else: ?>
                     <?php foreach ($stickers as $sticker): ?>
+                        <?php
+                            // Même règle que ProfileController::deleteSticker() :
+                            // propriétaire du sticker, ou admin (qui peut tout supprimer).
+                            $canDelete = Session::isAdmin()
+                                || ($sticker['user_id'] !== null && (int) $sticker['user_id'] === (int) $currentUser['id']);
+                        ?>
                         <div class="sticker-thumb" data-id="<?= $sticker['id'] ?>">
                             <img src="<?= htmlspecialchars($sticker['path']) ?>" alt="Sticker <?= $sticker['id'] ?>">
-                            <button type="button" class="sticker-delete-overlay" aria-label="Supprimer ce sticker">
-                                <i class="bi bi-trash3-fill"></i>
-                            </button>
+                            <?php if ($canDelete): ?>
+                                <button type="button" class="sticker-delete-overlay" aria-label="Supprimer ce sticker">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
         </div>
 
-        <form method="POST" action="/profile/sticker/add" enctype="multipart/form-data" class="d-flex gap-2">
+        <form method="POST" action="/profile/sticker/add" enctype="multipart/form-data" class="sticker-form d-flex gap-2">
             <input type="file" name="sticker" accept="image/*" class="form-control" required>
             <button type="submit" class="btn btn-outline-dark text-nowrap">
                 <i class="bi bi-plus-lg"></i> Ajouter
             </button>
+            <span class="field-status" aria-live="polite"></span>
         </form>
     </div>
 

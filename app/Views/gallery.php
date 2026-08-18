@@ -59,7 +59,9 @@
                     <i class="bi bi-person-circle"></i>
                     <span id="modalPostAuthor"></span>
                 </div>
-
+                <div class="post-modal-description">
+                    <span id="modalPostDescription"></span>
+                </div>
                 <!-- Commentaires -->
                 <div class="post-modal-comments" id="modalComments">
                     <!-- rempli par JS -->

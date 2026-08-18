@@ -12,7 +12,7 @@ const showStatus = (statusEl, text) => {
     statusEl._timer = setTimeout(() => statusEl.classList.remove('visible'), 1500);
 };
 
-async function submitFormWithAjax(form, statusEl, successMsg, errMsg) {
+async function submitFormWithAjax(form, statusEl) {
     form.classList.add('is-saving');
     try {
         const response = await fetch(form.action, {
@@ -23,13 +23,13 @@ async function submitFormWithAjax(form, statusEl, successMsg, errMsg) {
 
         if (!response.ok) {
             const data = await response.json().catch(() => null);
-            showStatus(statusEl, data?.errors?.[0] ?? errMsg);
+            showStatus(statusEl, data?.errors?.[0] ?? "Erreur, veuillez contacter un admin");
             return false;
         }
-        showStatus(statusEl, successMsg);
+        showStatus(statusEl, "Enregisté");
         return true;
     } catch {
-        showStatus(statusEl, errMsg);
+        showStatus(statusEl, "Erreur, veuillez contacter un admin");
         return false;
     } finally {
         form.classList.remove('is-saving');
@@ -39,6 +39,7 @@ async function submitFormWithAjax(form, statusEl, successMsg, errMsg) {
 const pseudoForm = document.querySelector('.pseudo-form');
 const passwordForm = document.querySelector('.pwd-form');
 const notifForm = document.querySelector('.notif-form');
+const stickerForm = document.querySelector('.sticker-form');
 
 if (pseudoForm) {
     const textbox = pseudoForm.querySelector('#changePseudo');
@@ -47,7 +48,7 @@ if (pseudoForm) {
     pseudoForm.addEventListener('submit', async (event) => {
         event.preventDefault();
         const previousPseudo = textbox.value;
-        const response = await submitFormWithAjax(pseudoForm, status, "Enregistré", "Erreur, réessayez")
+        const response = await submitFormWithAjax(pseudoForm, status);
         if (response === true)
             headerPseudo.textContent = textbox.value;
         else
@@ -59,8 +60,60 @@ if (passwordForm) {
     const status = passwordForm.querySelector('.field-status');
     passwordForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        await submitFormWithAjax(passwordForm, status, "Enregistré", "Erreur, réessayez");
+        await submitFormWithAjax(passwordForm, status);
         passwordForm.reset();
+    });
+}
+
+if (notifForm) {
+    const checkbox = notifForm.querySelector('#notifyOnComment');
+    const status = notifForm.querySelector('.field-status');
+
+    checkbox.addEventListener('change', async () => {
+        const previousChecked = !checkbox.checked;
+        checkbox.checked = 
+            await submitFormWithAjax(notifForm, status)
+                ? checkbox.checked : previousChecked; 
+    });
+}
+
+if (stickerForm) {
+    const status = stickerForm.querySelector('.field-status');
+    stickerForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        stickerForm.classList.add('is-saving');
+        try {
+            const response = await fetch(stickerForm.action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: new FormData(stickerForm), // pas de URLSearchParams : il y a un fichier dedans
+            });
+
+            if (!response.ok) {
+                const data = await response.json().catch(() => null);
+                showStatus(status, data?.errors?.[0] ?? "Erreur, veuillez contacter un admin");
+                return;
+            }
+
+            const data = await response.json();
+
+            const thumb = document.createElement('div');
+            thumb.className = 'sticker-thumb entering';
+            thumb.dataset.id = data.id;
+            thumb.innerHTML = `
+                <img src="${data.path}" alt="Sticker ${data.id}">
+                <button type="button" class="sticker-delete-overlay" aria-label="Supprimer ce sticker">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>`;
+            myStickersGrid.appendChild(thumb);
+
+            showStatus(status, "Enregistré");
+            stickerForm.reset();
+        } catch {
+            showStatus(status, "Erreur, veuillez contacter un admin");
+        } finally {
+            stickerForm.classList.remove('is-saving');
+        }
     });
 }
 
@@ -78,8 +131,11 @@ if (myStickersGrid) {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' },
                 body: new URLSearchParams({ sticker_id: stickerId }),
             });
-            if (response.ok)
-                deleteBtn.closest('.sticker-thumb').remove();
+            if (response.ok) {
+                const el = deleteBtn.closest('.sticker-thumb');
+                el.classList.add('leaving');
+                el.addEventListener('animationend', () => el.remove(), { once: true });
+            }
             return;
         }
 
@@ -96,17 +152,5 @@ if (myStickersGrid) {
                 el.classList.remove('confirm-delete');
             });
         }
-    });
-}
-
-if (notifForm) {
-    const checkbox = notifForm.querySelector('#notifyOnComment');
-    const status = notifForm.querySelector('.field-status');
-
-    checkbox.addEventListener('change', async () => {
-        const previousChecked = !checkbox.checked;
-        checkbox.checked = 
-            await submitFormWithAjax(notifForm, status, "Enregistré", "Erreur, réessayez")
-                ? checkbox.checked : previousChecked; 
     });
 }
