@@ -164,7 +164,6 @@ function moveDrag(e) {
 
 function endDrag() {
     state.isDragging = false;
-    // state.activeSticker = null;
 }
 
 canvas.addEventListener('mousedown', startDrag);

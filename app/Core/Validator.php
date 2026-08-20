@@ -9,15 +9,15 @@ class Validator
         $errors = [];
         $password ??= $default;
         if (strlen($password) < 8)
-            $errors[] = "Password must be at least 8 characters.";
+            $errors[] = "Le mot de passe doit contenir au moins 8 caractères.";
         if (!preg_match('/[a-z]/', $password))
-            $errors[] = "Password must contain at least one lowercase letter.";
+            $errors[] = "Le mot de passe doit contenir au moins une minuscule.";
         if (!preg_match('/[A-Z]/', $password))
-            $errors[] = "Password must contain at least one uppercase letter.";
+            $errors[] = "Le mot de passe doit contenir au moins une majuscule.";
         if (!preg_match('/[0-9]/', $password))
-            $errors[] = "Password must contain at least one number.";
+            $errors[] = "Le mot de passe doit contenir au moins un chiffre.";
         if (!preg_match('/[\W_]/', $password))
-            $errors[] = "Password must contain at least one special character.";
+            $errors[] = "Le mot de passe doit contenir au moins un caractère spécial.";
         return $errors;
     }
 }

@@ -21,7 +21,7 @@ class GalleryController
         $posts = $this->post->getPaginated($page);
         $totalPages = $this->post->getTotalPages();
 
-        $title = "Camagru - Gallery";
+        $title = "Camagru - Gallerie";
         $viewContent = __DIR__ . '/../Views/gallery.php';
         require __DIR__ . '/../Views/layout.php';
     }

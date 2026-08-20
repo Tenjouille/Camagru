@@ -14,7 +14,7 @@
                     <a class="nav-link" href="<?= $user ? '/' : '/login' ?>"><i class="bi bi-house"></i> Accueil</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/gallery"><i class="bi bi-grid"></i> Gallery</a>
+                    <a class="nav-link" href="/gallery"><i class="bi bi-grid"></i> Gallerie</a>
                 </li>
                 
                 <?php if ($user): ?>
@@ -24,7 +24,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-danger btn-sm px-3" href="/logout">Deconnexion</a>
+                        <a class="btn btn-danger btn-sm px-3" href="/logout">Déconnexion</a>
                     </li>
                 <?php else: ?>
                     <li class="nav-item">

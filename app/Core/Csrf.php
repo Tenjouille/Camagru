@@ -19,14 +19,14 @@ class Csrf
 
         if (Request::isAjax()) {
             ob_end_clean();
-            http_response_code(419); // token expiré / manquant
+            http_response_code(419);
             header('Content-Type: application/json');
             echo json_encode(['error' => 'Session expirée, merci de recharger la page']);
             exit;
         }
 
         http_response_code(403);
-        echo "403 - Invalid CSRF token";
+        echo "403 - Token CSRF invalide";
         exit;
     }
 }

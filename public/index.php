@@ -3,6 +3,12 @@
 require_once __DIR__ . "/../app/Core/Session.php";
 require_once __DIR__ . "/../app/Core/Request.php";
 
+// Empêche Camagru d'être chargé dans une <iframe> (clickjacking) et empêche
+// le navigateur de deviner un type de fichier différent du Content-Type
+// annoncé (MIME-sniffing, ex: un upload détourné en exécutable HTML/JS).
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+
 Session::start();
 ob_start();
 

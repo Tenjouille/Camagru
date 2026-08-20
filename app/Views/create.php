@@ -10,7 +10,7 @@
 
                 <div id="fallbackSection" class="fallback-section" style="display:none;">
                     <label for="photoInput" class="btn btn-outline-dark">
-                        <i class="bi bi-image"></i> Choose a photo
+                        <i class="bi bi-image"></i> Choisissez une photo
                     </label>
                     <input type="file" id="photoInput" accept="image/*" style="display:none;">
                 </div>
@@ -25,7 +25,7 @@
                 <span id="rotationValue">0°</span>
             </div>
             <div class="control-group">
-                <label><i class="bi bi-arrows-fullscreen"></i> Size</label>
+                <label><i class="bi bi-arrows-fullscreen"></i> Taille</label>
                 <input type="range" id="stickerSize" min="50" max="500" value="150" class="form-range">
                 <span id="sizeValue">150px</span>
             </div>
@@ -33,9 +33,9 @@
 
         <!-- Sélection stickers — scrollable si trop -->
         <div class="stickers-list">
-            <h6>Choose a sticker</h6>
+            <h6>Choisir un sticker</h6>
             <?php if (empty($stickers)): ?>
-                <p class="text-muted small">No stickers available yet.</p>
+                <p class="text-muted small">Aucun sticker disponible pour le moment.</p>
             <?php else: ?>
                 <div class="stickers-grid-wrapper">  <!-- AJOUT wrapper scrollable -->
                     <div class="stickers-grid">
@@ -51,7 +51,7 @@
                             type="button" 
                             id="deleteStickerBtn" 
                             class="btn btn-lg text-danger"
-                            title="Delete sticker">
+                            title="Supprimer le sticker">
                             <i class="bi bi-trash3"></i>
                         </button>
                     </div>
@@ -67,11 +67,11 @@
 
             <div class="create-form-bottom">
                 <div class="mb-3">
-                    <textarea name="description" class="form-control" placeholder="Add a description..." rows="2"></textarea>
+                    <textarea name="description" class="form-control" placeholder="Ajouter une description..." rows="2"></textarea>
                 </div>
 
                 <button type="button" id="captureBtn" class="btn btn-dark w-100" disabled>
-                    <i class="bi bi-camera"></i> Capture & Post
+                    <i class="bi bi-camera"></i> Capturer et publier
                 </button>
 
                 <?php if (!empty($errors)): ?>
@@ -91,10 +91,10 @@
 
     <!-- Side section : posts de l'utilisateur -->
     <aside class="create-sidebar">
-        <h6>Your posts</h6>
+        <h6>Mes posts</h6>
         <div class="sidebar-posts" id="myCreationSidebar">
             <?php if (empty($userPosts)): ?>
-                <p class="text-muted small">No posts yet.</p>
+                <p class="text-muted small">Aucun post pour le moment.</p>
             <?php else: ?>
                 <?php foreach ($userPosts as $post): ?>
                     <?php
@@ -102,7 +102,7 @@
                     ?>
                     <div class="sidebar-post" data-id="<?= $post['id'] ?>">
                         <img src="<?= htmlspecialchars($post['path']) ?>"
-                             alt="Your post">
+                             alt="Votre post">
                         <?php if($canDelete): ?>
                             <button type="button" class="post-delete-overlay" aria-label="Supprimer ce post">
                                 <i class="bi bi-trash3-fill"></i>

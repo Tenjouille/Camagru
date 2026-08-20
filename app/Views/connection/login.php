@@ -2,7 +2,7 @@
 
     <div class="text-center mb-4">
         <img src="/assets/images/camagru_name_logo.png" alt="Camagru" class="auth-logo">
-        <p class="text-muted mb-0">Sign in to continue</p>
+        <p class="text-muted mb-0">Se connecter pour continuer</p>
     </div>
 
     <?php if (!empty($errors)): ?>
@@ -25,25 +25,25 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Password</label>
+            <label class="form-label">Mot de passe</label>
             <input type="password" name="password" class="form-control auth-input" required>
         </div>
 
         <button type="submit" class="btn btn-dark w-100 auth-btn">
-            Login
+            Se connecter
         </button>
 
     </form>
 
     <div class="text-center mt-3">
         <small>
-            No account ?
-            <a href="/register">Create one</a>
+            Pas de compte ?
+            <a href="/register">Créez en un</a>
         </small>
     </div>
     <div class="text-center mt-3">
         <small>
-            <a href="/forgot-password">Forgotten password ?</a>
+            <a href="/forgot-password">Mot de passe oublié ?</a>
         </small>
     </div>
 </div>

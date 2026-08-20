@@ -2,7 +2,7 @@
 
     <div class="text-center mb-4">
         <img src="/assets/images/camagru_name_logo.png" alt="Camagru" class="auth-logo">
-        <p class="text-muted mb-0">Create an account</p>
+        <p class="text-muted mb-0">Créer un compte</p>
     </div>
 
     <?php if (!empty($errors)): ?>
@@ -31,25 +31,25 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Password</label>
+            <label class="form-label">Mot de passe</label>
             <input type="password" name="password" class="form-control auth-input" required>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Confirm password</label>
+            <label class="form-label">Validation du mot de passe</label>
             <input type="password" name="confirm" class="form-control auth-input" required>
         </div>
 
         <button type="submit" class="btn btn-dark w-100 auth-btn">
-            Register
+            S'inscrire
         </button>
 
     </form>
 
     <div class="text-center mt-3">
         <small>
-            Already have an account ?
-            <a href="/login">Sign in</a>
+            Déjà inscrit ?
+            <a href="/login">Se connecter</a>
         </small>
     </div>
 

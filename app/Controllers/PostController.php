@@ -35,14 +35,14 @@ class PostController
         $postId = (int) (Request::get('id', 0));
         if (!$postId) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid post id']);
+            echo json_encode(['error' => 'Identifiant de post invalide']);
             return ;
         }
         $user = Session::get('user');
         $post = $this->post->getById($postId);
         if (!$post) {
             http_response_code(404);
-            echo json_encode(['error' => ' Post not found']);
+            echo json_encode(['error' => 'Post introuvable']);
             return ;
         }
 
@@ -75,14 +75,14 @@ class PostController
 
         if (!Session::has('user')) {
             http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
+            echo json_encode(['error' => 'Non autorisé']);
             return ;
         }
 
         $postId = (int) Request::post('post_id', 0);
         if (!$postId) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid post id']);
+            echo json_encode(['error' => 'Identifiant de post invalide']);
             return ;
         }
 
@@ -105,7 +105,7 @@ class PostController
 
         if (!Session::has('user')) {
             http_response_code(401);
-            echo json_encode(['error' => 'Unauthorized']);
+            echo json_encode(['error' => 'Non autorisé']);
             return ;
         }
 
@@ -113,7 +113,7 @@ class PostController
         $content = trim(Request::post('content'));
         if (!$postId || empty($content)) {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid data']);
+            echo json_encode(['error' => 'Données invalides']);
             return ;
         }
         $userId = Session::get('user')['id'];
@@ -176,9 +176,9 @@ class PostController
             $stickers = json_decode($stickersData, true);
 
             if (!is_array($stickers) || empty($stickers))
-                $errors[] = "Please select at least one sticker.";
+                $errors[] = "Merci de sélectionner au moins un sticker.";
             if (!$imageData)
-                $errors[] = "No image captured.";
+                $errors[] = "Aucune image capturée.";
             if (is_array($stickers)) {
                 foreach ($stickers as $sticker) {
                     if (!isset(
@@ -189,7 +189,7 @@ class PostController
                         $sticker['h'],
                         $sticker['angle']
                     )) {
-                        $errors[] = "Invalid sticker data.";
+                        $errors[] = "Données de sticker invalides.";
                         break ;
                     }
                 }
@@ -214,14 +214,14 @@ class PostController
                     header("Location: /create");
                     exit;
                 } else {
-                    $errors[] = "Failed to process image";
+                    $errors[] = "Échec du traitement de l'image";
                 }
             }
         }
         $stickers = $this->sticker->getAvailable($user['id']);
         $userPosts = $this->post->getByUserId($user['id']);
 
-        $title = "Camagru - Creation";
+        $title = "Camagru - Création";
         $bodyClass = 'create-page';
         $viewContent = __DIR__ . '/../Views/create.php';
         require __DIR__ . '/../Views/layout.php';

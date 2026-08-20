@@ -59,7 +59,6 @@ class User {
         ");
         $stmt->execute([':token' => $token]);
 
-        // if rowCount == 0, the followed link is obsolete
         return $stmt->rowCount() > 0;
     }
 

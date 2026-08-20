@@ -1,9 +1,9 @@
 <div class="container py-4">
 
-    <h2 class="mb-4">Gallery</h2>
+    <h2 class="mb-4">Galerie</h2>
 
     <?php if (empty($posts)): ?>
-        <p class="text-muted text-center">No posts yet.</p>
+        <p class="text-muted text-center">Aucun post pour le moment.</p>
     <?php else: ?>
 
         <!-- Grille 3 colonnes -->
@@ -13,7 +13,7 @@
                     <a href="#" class="gallery-item d-block position-relative" data-post-id="<?= $post['id'] ?>">
                         <img
                             src="<?= htmlspecialchars($post['path']) ?>"
-                            alt="Post by <?= htmlspecialchars($post['pseudo']) ?>"
+                            alt="Post de <?= htmlspecialchars($post['pseudo']) ?>"
                             class="img-fluid w-100"
                         >
                         <div class="gallery-sticker">
@@ -78,10 +78,10 @@
                 <!-- Formulaire commentaire -->
                 <div class="post-modal-comment-form">
                     <input type="text" id="modalCommentInput"
-                        placeholder="Add a comment..."
+                        placeholder="Ajouter un commentaire..."
                         class="form-control form-control-sm">
                     <button class="btn btn-dark btn-sm" id="modalCommentSubmit">
-                        Post
+                        Publier
                     </button>
                 </div>
 
@@ -92,4 +92,4 @@
 <script>
     const IS_LOGGED_IN = <?= Session::has('user') ? 'true' : 'false' ?>;
 </script>
-<script src="/assets/js/gallery.js"></script>
+<script type="module" src="/assets/js/gallery/main.js"></script>

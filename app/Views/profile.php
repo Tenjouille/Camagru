@@ -76,8 +76,6 @@
                 <?php else: ?>
                     <?php foreach ($stickers as $sticker): ?>
                         <?php
-                            // Même règle que ProfileController::deleteSticker() :
-                            // propriétaire du sticker, ou admin (qui peut tout supprimer).
                             $canDelete = Session::isAdmin()
                                 || ($sticker['user_id'] !== null && (int) $sticker['user_id'] === (int) $currentUser['id']);
                         ?>
@@ -105,3 +103,5 @@
     </div>
 
 </div>
+
+<script type="module" src="/assets/js/profile/main.js"></script>

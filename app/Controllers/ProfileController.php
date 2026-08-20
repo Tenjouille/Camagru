@@ -27,7 +27,6 @@ class ProfileController
         $this->currentUser = $currentUser;
     }
 
-    // GET /profile — affiche la page (infos compte, préférence notifs, stickers perso)
     public function show(array $errors = []) {
         $success = null;
 
@@ -54,7 +53,6 @@ class ProfileController
         $this->show($errors);
     }
 
-    // POST /profile/sticker — upload d'un sticker personnel
     public function addSticker() {
         Csrf::guard();
         $sticker = Request::file('sticker');
@@ -141,7 +139,6 @@ class ProfileController
         exit;
     }
 
-    // POST /profile/pseudo — changement de pseudo
     public function updatePseudo() {
         Csrf::guard();
         $errors = [];
@@ -188,7 +185,6 @@ class ProfileController
         exit;
     }
 
-    // POST /profile/password — changement de mot de passe (utilisateur connecté)
     public function updatePassword() {
         Csrf::guard();
         $errors = [];
@@ -223,7 +219,6 @@ class ProfileController
         exit;
     }
 
-    // POST /profile/notifications — activer/désactiver les notifs email sur commentaire
     public function toggleNotifications() {
         Csrf::guard();
         $is_enabled = Request::has('email_notification') ? 1 : 0;
@@ -231,13 +226,11 @@ class ProfileController
 
         $this->refreshCurrentUser();
 
-        // Requête AJAX (toggle sans rechargement) : pas de redirection, juste un statut.
         if (Request::isAjax()) {
             http_response_code(204);
             exit;
         }
 
-        // Fallback si JS est désactivé : comportement classique par redirection.
         header('Location: /profile');
         exit;
     }

@@ -12,6 +12,8 @@ export const dom = {
     deleteStickerBtn: document.getElementById('deleteStickerBtn')
 };
 
+export const myCreationSidebar = document.querySelector('#myCreationSidebar');
+
 export const state = {
     videoStream: null,
     sourceImage: null, // HTMLVideoElement ou HTMLImageElement

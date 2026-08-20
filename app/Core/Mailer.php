@@ -20,24 +20,24 @@ class Mailer
         $link = "http://localhost:8080/verify?token={$token}";
 
         $body = "
-            <h2>Welcome on Camagru !</h2>
-            <p>Please, click on this link to validate your registration :</p>
+            <h2>Bienvenue sur Camagru !</h2>
+            <p>Cliquez sur ce lien pour valider votre inscription :</p>
             <a href='{$link}'>{$link}</a>
         ";
 
-        return $this->send($to, "Confirm you registration", $body);
+        return $this->send($to, "Validez votre inscription", $body);
     }
 
     public function sendPasswordReset(string $to, string $token): bool {
         $link = "http://localhost:8080/reset-password?token={$token}";
 
         $body = "
-            <h2>Password Reinitialization</h2>
-            <p>Please, click on this link to choose a new password</p>
+            <h2>Réinitialisation du mot de passe</h2>
+            <p>Cliquez sur ce lien pour choisir un nouveau mot de passe</p>
             <a href='{$link}'>{$link}</a>
         ";
 
-        return $this->send($to, "Reset your password", $body);
+        return $this->send($to, "Réinitialisez votre mot de passe", $body);
     }
 
     public function sendCommentNotification(string $to, string $commenterPseudo, string $commentContent, string $postImagePath, int $postId): bool {
@@ -47,13 +47,13 @@ class Mailer
         $content = htmlspecialchars($commentContent);
 
         $body = "
-            <h2>New comment on your post!</h2>
+            <h2>Nouveau commentaire sur votre post ! 💯</h2>
             <img src='{$imageUrl}' alt='Your post' style='max-width: 300px; border-radius: 8px; display: block; margin-bottom: 1rem;'>
-            <p><strong>{$pseudo}</strong> commented on your post :</p>
+            <p><strong>{$pseudo}</strong> a commenté votre post :</p>
             <p style='font-style: italic;'>\"{$content}\"</p>
-            <a href='{$link}'>View it on Camagru</a>
+            <a href='{$link}'>Répondez lui sur Camagru</a>
         ";
 
-        return $this->send($to, "New comment on your post", $body);
+        return $this->send($to, "Nouveau commentaire sur votre post", $body);
     }
 }

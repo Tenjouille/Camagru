@@ -26,18 +26,20 @@ class UserController {
 
             $user = $this->user->findByPseudo($pseudo);
             if (!$user)
-                $errors[] = "Invalid Identifiers : incorrect password or username";
+                $errors[] = "Echec de connexion : Mot de passe ou pseudonyme incorrect";
             else if (!password_verify($password, $user['password']))
-                $errors[] = "Invalid Identifiers : incorrect password or username";
+                $errors[] = "Echec de connexion : Mot de passe ou pseudonyme incorrect";
             else if (!$user['is_verified'])
-                $errors[] = "Account not verified yet. Please, check your mailbox";
+                $errors[] = "Compte pas encore authentifié. Verifiez votre boite mail";
             if (empty($errors)) {
                 Session::set('user', $user);
                 header('Location: /');
                 exit;
             }
+            // anti brute-force
+            sleep(2);
         }
-        $title = "Camagru - Login";
+        $title = "Camagru - Connexion";
         $viewContent = __DIR__ ."/../Views/connection/login.php";
         require __DIR__ . "/../Views/layout.php";
     }
@@ -53,7 +55,7 @@ class UserController {
             $password   = Request::post('password');
             $confirm    = Request::post('confirm');
 
-            if(strlen($pseudo) < 6)
+            if(strlen($pseudo) < 6 || strlen($pseudo) > 60)
                 $errors[] = "Votre pseudo doit faire entre 6 et 60 caractères.";
             if(empty($email))
                 $errors[] = "Un email est requis.";
@@ -61,7 +63,7 @@ class UserController {
                 $errors[] = "L'email est invalide.";
             $errors = [...$errors, ...Validator::password($password, '')];
             if($password !== $confirm)
-                $errors[] = "Passwords doesn't match";
+                $errors[] = "Les mots de passe ne correspondent pas";
             if ($this->user->findByEmail($email))
                 $errors[] = "Un utilisateur utilise déjà cette adresse email.";
             if ($this->user->findByPseudo($pseudo))
@@ -76,7 +78,7 @@ class UserController {
                 $mailer = new Mailer();
                 $mailer->sendVerification($email, $token);
                 
-                header('Location: /login?registered=1'); // équivalent d'un window.location.href = /login?registered=1 en JS
+                header('Location: /login?registered=1');
                 exit;
             }
         }
@@ -101,7 +103,7 @@ class UserController {
 
         $success = $this->user->verifyAccount($token);
 
-        $title = "Account verification";
+        $title = "Camagru - Vérification du compte";
         $viewContent = __DIR__ . '/../Views/connection/verify.php';
         require __DIR__ . '/../Views/layout.php';
     }
@@ -115,11 +117,10 @@ class UserController {
             $email = trim(Request::post('email'));
 
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = "A valid email is required";
+                $errors[] = "Email invalide";
             } else {
                 $user = $this->user->findByEmail($email);
 
-                // We do not reveal if the email exist or not (security measure)
                 if ($user) {
                     $token = bin2hex(random_bytes(32));
                     $this->user->setResetToken($email, $token);
@@ -131,7 +132,7 @@ class UserController {
                 $success = true;
             }
         }
-        $title = "Forgotten Password";
+        $title = "Camagru - Mot de passe oublié";
         $viewContent = __DIR__ . "/../Views/connection/forgot-password.php";
         require __DIR__ . '/../Views/layout.php';
     }
@@ -158,9 +159,9 @@ class UserController {
             $confirm = Request::post('confirm');
 
             if(strlen($password) < 8)
-                $errors[] = "A minimum 8 character password is required.";
+                $errors[] = "Un mot de passe de 8 caractères minimum est requit.";
             if($password !== $confirm)
-                $errors[] = "Passwords doesn't match";
+                $errors[] = "Les mots de passe ne correspondent pas";
 
             if (empty($errors)) {
                 $this->user->updatePassword($user['id'], $password);
@@ -169,7 +170,7 @@ class UserController {
             }
         }
 
-        $title = "New Password";
+        $title = "Camagru - Nouveau mot de passe";
         $viewContent = __DIR__ . "/../Views/connection/reset-password.php";
         require __DIR__ . "/../Views/layout.php";
     }
