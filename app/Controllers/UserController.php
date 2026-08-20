@@ -88,7 +88,7 @@ class UserController {
     }
 
     public function logout() {
-        session_destroy();
+        Session::destroy();
         header('Location: /login');
         exit;
     }

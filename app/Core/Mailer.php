@@ -16,8 +16,14 @@ class Mailer
         return mail($to, $subject, $body, $headers);
     }
 
+    private function baseUrl(): string {
+        $scheme = $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8080';
+        return "{$scheme}://{$host}";
+    }
+
     public function sendVerification(string $to, string $token): bool {
-        $link = "http://localhost:8080/verify?token={$token}";
+        $link = "{$this->baseUrl()}/verify?token={$token}";
 
         $body = "
             <h2>Bienvenue sur Camagru !</h2>
@@ -29,7 +35,7 @@ class Mailer
     }
 
     public function sendPasswordReset(string $to, string $token): bool {
-        $link = "http://localhost:8080/reset-password?token={$token}";
+        $link = "{$this->baseUrl()}/reset-password?token={$token}";
 
         $body = "
             <h2>Réinitialisation du mot de passe</h2>
@@ -41,8 +47,8 @@ class Mailer
     }
 
     public function sendCommentNotification(string $to, string $commenterPseudo, string $commentContent, string $postImagePath, int $postId): bool {
-        $link = "http://localhost:8080/gallery?post={$postId}";
-        $imageUrl = "http://localhost:8080{$postImagePath}";
+        $link = "{$this->baseUrl()}/gallery?post={$postId}";
+        $imageUrl = "{$this->baseUrl()}{$postImagePath}";
         $pseudo = htmlspecialchars($commenterPseudo);
         $content = htmlspecialchars($commentContent);
 
