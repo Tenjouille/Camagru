@@ -5,6 +5,12 @@ toggler.addEventListener('click', () => {
     navMenu.classList.toggle('show');
 });
 
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+}
+
 const showStatus = (statusEl, text) => {
     clearTimeout(statusEl._timer);
     statusEl.textContent = text;
@@ -37,6 +43,7 @@ async function submitFormWithAjax(form, statusEl) {
 }
 
 const pseudoForm = document.querySelector('.pseudo-form');
+const emailForm = document.querySelector('.email-form')
 const passwordForm = document.querySelector('.pwd-form');
 const notifForm = document.querySelector('.notif-form');
 const stickerForm = document.querySelector('.sticker-form');
@@ -53,6 +60,16 @@ if (pseudoForm) {
             headerPseudo.textContent = textbox.value;
         else
             textbox.value = previousPseudo;
+    });
+}
+
+if (emailForm) {
+    const textbox = emailForm.querySelector('#changeEmail');
+    const status = emailForm.querySelector('.field-status');
+    emailForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const previousEmail = textbox.value;
+        const response = await submitFormWithAjax(emailForm, status);
     });
 }
 
@@ -101,7 +118,7 @@ if (stickerForm) {
             thumb.className = 'sticker-thumb entering';
             thumb.dataset.id = data.id;
             thumb.innerHTML = `
-                <img src="${data.path}" alt="Sticker ${data.id}">
+                <img src="${escapeHtml(data.path)}" alt="Sticker ${escapeHtml(String(data.id))}">
                 <button type="button" class="sticker-delete-overlay" aria-label="Supprimer ce sticker">
                     <i class="bi bi-trash3-fill"></i>
                 </button>`;
@@ -129,7 +146,7 @@ if (myStickersGrid) {
             const stickerId = deleteBtn.closest('.sticker-thumb').dataset.id;
             const response = await fetch('/profile/sticker/delete', {
                 method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-Token': CSRF_TOKEN },
                 body: new URLSearchParams({ sticker_id: stickerId })
             });
             if (response.ok) {
@@ -166,7 +183,7 @@ if(myCreationsGrid) {
             const postId = deleteBtn.closest('.sidebar-post').dataset.id;
             const response = await fetch('/post/delete', {
                 method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-Token': CSRF_TOKEN },
                 body: new URLSearchParams({ post_id: postId })
             });
             if (response.ok) {

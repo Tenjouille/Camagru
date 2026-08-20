@@ -19,6 +19,7 @@
 
         <!-- Pseudo -->
         <form method="POST" action="/profile/pseudo" class="mb-3 pseudo-form">
+            <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
             <label class="form-label">Pseudo</label>
             <div class="input-group">
                 <input type="text" name="pseudo" id="changePseudo" class="form-control"
@@ -29,13 +30,19 @@
         </form>
 
         <!-- Email (lecture seule) -->
-        <div class="mb-3">
+        <form method="POST" action="/profile/email" class="mb-3 email-form">
+            <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" value="<?= htmlspecialchars($currentUser['email']) ?>" disabled>
-        </div>
+            <div class="input-group">
+                <input type="email" name="email" id="changeEmail" class="form-control" value="<?= htmlspecialchars($currentUser['email']) ?>">
+                <button type="submit" class="btn btn-dark <?= Session::isAdmin() ? 'd-none' : "" ?>">Mettre à jour</button>
+            </div>
+            <span class="field-status" aria-live="polite"></span>
+        </form>
 
         <!-- Mot de passe -->
         <form method="POST" action="/profile/password" class="mb-3 pwd-form">
+            <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
             <label class="form-label">Changer le mot de passe</label>
             <input type="password" name="current_password" class="form-control mb-2" placeholder="Mot de passe actuel" required>
             <input type="password" name="password" class="form-control mb-2" placeholder="Nouveau mot de passe" required>
@@ -46,6 +53,7 @@
 
         <!-- Notifications email -->
         <form method="POST" action="/profile/notifications" class="notif-form">
+            <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
             <div class="form-check form-switch d-flex align-items-center gap-2">
                 <input type="checkbox" class="form-check-input" id="notifyOnComment" name="email_notification"
                        value="1" <?= !empty($currentUser['email_notification']) ? 'checked' : '' ?>>
@@ -87,6 +95,7 @@
         </div>
 
         <form method="POST" action="/profile/sticker/add" enctype="multipart/form-data" class="sticker-form d-flex gap-2">
+            <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
             <input type="file" name="sticker" accept="image/*" class="form-control" required>
             <button type="submit" class="btn btn-outline-dark text-nowrap">
                 <i class="bi bi-plus-lg"></i> Ajouter

@@ -59,6 +59,9 @@ switch ($uri) {
     case '/profile/pseudo':
         (new ProfileController($user))->updatePseudo();
         break;
+    case '/profile/email':
+        (new ProfileController($user))->updateEmail();
+        break;
     case '/profile/password':
         (new ProfileController($user))->updatePassword();
         break;

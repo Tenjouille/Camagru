@@ -13,6 +13,11 @@ class Request {
         return parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
     }
 
+    public static function header(string $name): ?string {
+        $key = 'HTTP_' . str_replace('-', '_', strtoupper($name));
+        return $_SERVER[$key] ?? null;
+    }
+
     public static function isAjax(): bool {
         return ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'XMLHttpRequest';
     }

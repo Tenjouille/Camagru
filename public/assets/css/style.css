@@ -1,10 +1,3 @@
-:root {
-    --navbar-height: 127px;
-    --footer-height: 139.4px;
-    --footer-height-mobile: 189px;
-    --main-padding: 4rem;
-}
-
 /* Base */
 body {
     /* background: red !important; */
@@ -43,7 +36,26 @@ body {
 /* Main */
 .camagru-main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
     padding: 2rem 0;
+}
+
+/* Page create : body.create-page a une hauteur FIXE (pas juste un plancher
+   comme min-height:100vh sur le body générique), sinon rien ne force jamais
+   le rétrécissement de la colonne et elle grandit avec son contenu (ex: la
+   sidebar "Your posts" bien remplie) au lieu de rester dans la fenêtre. */
+body.create-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+body.create-page .camagru-main .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
 }
 
 /* Footer */
@@ -139,7 +151,8 @@ body {
 .create-layout {
     display: flex;
     gap: 1.5rem;
-    height: calc(100vh - var(--navbar-height) - var(--footer-height) - var(--main-padding));
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
 }
 
@@ -295,6 +308,7 @@ body {
 .create-sidebar {
     width: 180px;
     flex-shrink: 0;
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -307,10 +321,15 @@ body {
 
 .sidebar-posts {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+.sidebar-post {
+    position: relative;
 }
 
 .sidebar-post img {
@@ -319,6 +338,11 @@ body {
     border-radius: 6px;
     object-fit: cover;
     aspect-ratio: 1/1;
+}
+
+.sidebar-post.leaving {
+    animation: stickerPopOut 0.2s ease forwards;
+    pointer-events: none;
 }
 
 .post-delete-overlay {
@@ -346,10 +370,6 @@ body {
 
 /* Responsive mobile */
 @media (max-width: 767px) {
-    .create-layout {
-        height: calc(100vh - var(--navbar-height) - var(--footer-height-mobile) - var(--main-padding));
-    }
-
     .canvas-wrapper {
         flex: 1;
         min-height: 0;

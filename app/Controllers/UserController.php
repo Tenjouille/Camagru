@@ -7,6 +7,7 @@ require_once __DIR__ . "/../Core/Mailer.php";
 require_once __DIR__ . "/../Core/Session.php";
 require_once __DIR__ . "/../Core/Request.php";
 require_once __DIR__ . "/../Core/Validator.php";
+require_once __DIR__ . "/../Core/Csrf.php";
 
 class UserController {
     private User $user;
@@ -19,6 +20,7 @@ class UserController {
         $errors = [];
 
         if ($method === 'POST') {
+            Csrf::guard();
             $pseudo     = Request::post('pseudo');
             $password   = Request::post('password');
 
@@ -45,6 +47,7 @@ class UserController {
         $errors = [];
 
         if ($method === 'POST') {
+            Csrf::guard();
             $pseudo     = trim(Request::post('pseudo'));
             $email      = trim(Request::post('email'));
             $password   = Request::post('password');
@@ -108,6 +111,7 @@ class UserController {
         $success = false;
 
         if ($method === 'POST') {
+            Csrf::guard();
             $email = trim(Request::post('email'));
 
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -149,6 +153,7 @@ class UserController {
         }
 
         if ($method === 'POST') {
+            Csrf::guard();
             $password = Request::post('password');
             $confirm = Request::post('confirm');
 

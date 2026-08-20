@@ -6,9 +6,12 @@ require_once __DIR__ . "/../Models/Posts.php";
 require_once __DIR__ . "/../Models/Stickers.php";
 require_once __DIR__ . "/../Models/Likes.php";
 require_once __DIR__ . "/../Models/Comments.php";
+require_once __DIR__ . "/../Models/Users.php";
 
 require_once __DIR__ . "/../Core/Session.php";
 require_once __DIR__ . "/../Core/Request.php";
+require_once __DIR__ . "/../Core/Mailer.php";
+require_once __DIR__ . "/../Core/Csrf.php";
 
 class PostController
 {
@@ -16,12 +19,14 @@ class PostController
     private Sticker $sticker;
     private Like $like;
     private Comment $comment;
+    private User $user;
 
     public function __construct() {
         $this->post = new Post();
         $this->sticker = new Sticker();
         $this->like = new Like();
         $this->comment = new Comment();
+        $this->user = new User();
     }
 
     public function show(array $errors = []) {
@@ -64,6 +69,7 @@ class PostController
     }
 
     public function like() {
+        Csrf::guard();
         ob_end_clean();
         header('Content-Type: application/json');
 
@@ -93,6 +99,7 @@ class PostController
     }
 
     public function comment() {
+        Csrf::guard();
         ob_end_clean();
         header('Content-Type: application/json');
 
@@ -112,12 +119,22 @@ class PostController
         $userId = Session::get('user')['id'];
         $this->comment->create($postId, $userId, $content);
 
+        $post = $this->post->getById($postId);
+        if ($post && (int) $post['user_id'] !== $userId) {
+            $owner = $this->user->findById((int) $post['user_id']);
+            if ($owner && !empty($owner['email']) && (int) $owner['email_notification'] === 1) {
+                $commenterPseudo = Session::get('user')['pseudo'];
+                (new Mailer())->sendCommentNotification($owner['email'], $commenterPseudo, $content, $post['path'], $postId);
+            }
+        }
+
         $comments = $this->comment->getByPostId($postId);
 
         echo json_encode(['comments' => $comments]);
     }
 
     public function delete() {
+        Csrf::guard();
         $postId = (int) Request::post('post_id', 0);
         $post = $this->post->getById($postId);
         if (!$post) {
@@ -130,7 +147,7 @@ class PostController
             return;
         }
         $this->post->delete($postId);
-        $diskPath = __DIR__ . '/../../public/uploads/' . $post['path'];
+        $diskPath = __DIR__ . '/../../public' . $post['path'];
         if (file_exists($diskPath))
             unlink($diskPath);
         if (Request::isAjax()) {
@@ -152,6 +169,7 @@ class PostController
         $errors = [];
 
         if ($method === 'POST') {
+            Csrf::guard();
             $description    = trim(Request::post('description', ''));
             $imageData      = Request::post('image_data');
             $stickersData   = Request::post('stickers');
@@ -204,6 +222,7 @@ class PostController
         $userPosts = $this->post->getByUserId($user['id']);
 
         $title = "Camagru - Creation";
+        $bodyClass = 'create-page';
         $viewContent = __DIR__ . '/../Views/create.php';
         require __DIR__ . '/../Views/layout.php';
     }

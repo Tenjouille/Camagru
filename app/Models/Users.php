@@ -96,7 +96,7 @@ class User {
         ]);
     }
 
-        public function updatePseudo(int $id, string $pseudo): bool {
+    public function updatePseudo(int $id, string $pseudo): bool {
         $stmt = $this->db->prepare("
             UPDATE users SET pseudo = :pseudo, reset_token = NULL, reset_token_expires_at = NULL
             WHERE id = :id
@@ -107,6 +107,17 @@ class User {
         ]);
     }
 
+
+    public function updateEmail(int $id, string $email): bool {
+        $stmt = $this->db->prepare("
+            UPDATE users SET email = :email
+            WHERE id = :id
+        ");
+        return $stmt->execute([
+            ':email' => $email,
+            ':id' => $id
+        ]);
+    }
 
     public function toggleEmailNotification(int $id, int $is_enabled): bool {
         $stmt = $this->db->prepare("

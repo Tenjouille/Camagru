@@ -33,6 +33,13 @@ function closeModal() {
     currentPostId = null;
     modalImage.src = '';
     modalComments.innerHTML = '';
+
+    // Nettoie le ?post=ID de l'URL pour ne pas rouvrir la modale au refresh
+    if (new URLSearchParams(window.location.search).has('post')) {
+        const url = new URL(window.location);
+        url.searchParams.delete('post');
+        history.replaceState(null, '', url);
+    }
 }
 
 // --- Charge les données du post ---
@@ -60,7 +67,10 @@ modalLikeBtn.addEventListener('click', async () => {
 
     const res  = await fetch('/post/like', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-Token': CSRF_TOKEN
+        },
         body: `post_id=${currentPostId}`
     });
     const data = await res.json();
@@ -84,7 +94,10 @@ modalCommentSubmit.addEventListener('click', async () => {
 
     const res  = await fetch('/post/comment', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-Token': CSRF_TOKEN
+        },
         body: `post_id=${currentPostId}&content=${encodeURIComponent(content)}`
     });
     const data = await res.json();
@@ -98,6 +111,15 @@ modalCommentInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') modalCommentSubmit.click();
 });
 
+// Echappe le texte avant de l'insérer en HTML (les commentaires/pseudos
+// viennent des utilisateurs — sans ça, <script> dans un commentaire
+// s'exécuterait chez tout le monde qui ouvre le post).
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+}
+
 function renderComments(comments) {
     if (!comments.length) {
         modalComments.innerHTML = '<p class="text-muted small">No comments yet.</p>';
@@ -106,8 +128,8 @@ function renderComments(comments) {
 
     modalComments.innerHTML = comments.map(c => `
         <div class="post-comment">
-            <span class="comment-author">${c.pseudo}</span>
-            <span class="comment-content">${c.content}</span>
+            <span class="comment-author">${escapeHtml(c.pseudo)}</span>
+            <span class="comment-content">${escapeHtml(c.content)}</span>
         </div>
     `).join('');
 
@@ -115,18 +137,10 @@ function renderComments(comments) {
     modalComments.scrollTop = modalComments.scrollHeight;
 }
 
-// document.querySelectorAll('.gallery-item').forEach(item => {
-//     item.addEventListener('click', async (e) => {
-//         e.preventDefault();
-//         console.log('dataset:', item.dataset);
-//         console.log('postId:', item.dataset.postId);
-//         // ...
-//     });
-// });
-
-// async function loadPost(postId) {
-//     const res  = await fetch(`/post?id=${postId}`);
-//     const text = await res.text();
-//     console.log('status:', res.status);
-//     console.log('response:', text);
-// }
+// --- Deep link : /gallery?post=ID ouvre directement la modale du post
+// (ex: lien reçu par email de notification) ---
+const deepLinkPostId = new URLSearchParams(window.location.search).get('post');
+if (deepLinkPostId) {
+    currentPostId = deepLinkPostId;
+    loadPost(deepLinkPostId).then(() => postModal.classList.add('open'));
+}

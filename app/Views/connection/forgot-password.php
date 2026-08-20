@@ -21,6 +21,7 @@
     <?php endif; ?>
 
     <form method="POST" action="/forgot-password">
+        <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
         <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" name="email" class="form-control auth-input" required>

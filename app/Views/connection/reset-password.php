@@ -14,6 +14,7 @@
     <?php endif; ?>
 
     <form method="POST" action="/reset-password?token=<?= htmlspecialchars($token) ?>">
+        <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
         <div class="mb-3">
             <label class="form-label">New Password</label>
             <input type="password" name="password" class="form-control auth-input" required>

@@ -16,6 +16,7 @@
     <?php endif; ?>
 
     <form method="POST" action="/register">
+        <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
 
         <div class="mb-3">
             <label class="form-label">Pseudo</label>

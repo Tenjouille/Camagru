@@ -8,6 +8,7 @@ require_once __DIR__ . "/../Models/Users.php";
 require_once __DIR__ . "/../Core/Session.php";
 require_once __DIR__ . "/../Core/Request.php";
 require_once __DIR__ . "/../Core/Validator.php";
+require_once __DIR__ . "/../Core/Csrf.php";
 
 class ProfileController
 {
@@ -55,6 +56,7 @@ class ProfileController
 
     // POST /profile/sticker — upload d'un sticker personnel
     public function addSticker() {
+        Csrf::guard();
         $sticker = Request::file('sticker');
         $userId = Session::isAdmin() ? null : $this->currentUser['id'];
 
@@ -110,6 +112,7 @@ class ProfileController
     }
 
     public function deleteSticker() {
+        Csrf::guard();
         $stickerId = (int) Request::post('sticker_id', 0);
         $sticker = $this->sticker->findById($stickerId);
         if (!$sticker) {
@@ -140,6 +143,7 @@ class ProfileController
 
     // POST /profile/pseudo — changement de pseudo
     public function updatePseudo() {
+        Csrf::guard();
         $errors = [];
         $new_pseudo = Request::post('pseudo');
         $exists = $this->user->findByPseudo($new_pseudo);
@@ -160,8 +164,33 @@ class ProfileController
         header('Location: /profile');
         exit;
     }
+
+        public function updateEmail() {
+        Csrf::guard();
+        $errors = [];
+        $new_email = Request::post('email');
+        $exists = $this->user->findByEmail($new_email);
+        if(!filter_var($new_email, FILTER_VALIDATE_EMAIL))
+            $errors[] = "L'email est invalide.";
+        if ($exists && (int) $exists['id'] !== (int) $this->currentUser['id'])
+            $errors[] = "Email déjà utilisé par un autre utilisateur";
+        if (!empty($errors)) {
+            $this->returnErrors($errors);
+            return;
+        }
+        $this->user->updateEmail(Session::get('user')['id'], $new_email);
+        $this->refreshCurrentUser();
+        if (Request::isAjax()) {
+            http_response_code(204);
+            exit;
+        }
+        header('Location: /profile');
+        exit;
+    }
+
     // POST /profile/password — changement de mot de passe (utilisateur connecté)
     public function updatePassword() {
+        Csrf::guard();
         $errors = [];
         $curr_pwd = Request::post('current_password'); 
         $new_pwd = Request::post('password');
@@ -196,6 +225,7 @@ class ProfileController
 
     // POST /profile/notifications — activer/désactiver les notifs email sur commentaire
     public function toggleNotifications() {
+        Csrf::guard();
         $is_enabled = Request::has('email_notification') ? 1 : 0;
         $this->user->toggleEmailNotification($this->currentUser['id'], $is_enabled);
 

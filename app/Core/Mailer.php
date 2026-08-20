@@ -39,4 +39,21 @@ class Mailer
 
         return $this->send($to, "Reset your password", $body);
     }
+
+    public function sendCommentNotification(string $to, string $commenterPseudo, string $commentContent, string $postImagePath, int $postId): bool {
+        $link = "http://localhost:8080/gallery?post={$postId}";
+        $imageUrl = "http://localhost:8080{$postImagePath}";
+        $pseudo = htmlspecialchars($commenterPseudo);
+        $content = htmlspecialchars($commentContent);
+
+        $body = "
+            <h2>New comment on your post!</h2>
+            <img src='{$imageUrl}' alt='Your post' style='max-width: 300px; border-radius: 8px; display: block; margin-bottom: 1rem;'>
+            <p><strong>{$pseudo}</strong> commented on your post :</p>
+            <p style='font-style: italic;'>\"{$content}\"</p>
+            <a href='{$link}'>View it on Camagru</a>
+        ";
+
+        return $this->send($to, "New comment on your post", $body);
+    }
 }

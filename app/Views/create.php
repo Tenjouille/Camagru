@@ -59,12 +59,12 @@
             <?php endif; ?>
         </div>
 
-        <!-- Formulaire de soumission -->
+        <!-- Boutton de Capture | Formulaire de soumission -->
         <form id="createForm" method="POST" action="/create">
+            <input type="hidden" name="csrf_token" value="<?= Session::csrfToken() ?>">
             <input type="hidden" name="image_data" id="imageData">
             <input type="hidden" name="stickers" id="stickersData">
 
-            <!-- AJOUT wrapper pour isoler description + bouton -->
             <div class="create-form-bottom">
                 <div class="mb-3">
                     <textarea name="description" class="form-control" placeholder="Add a description..." rows="2"></textarea>
